@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}">🛒 Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Contact Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Contact Us</h1>
+      <p>If you have any questions, feedback, or special requests, feel free to reach out!</p>
+
+      <form method="POST" action="#">
+        <label for="name">Your Name:</label>
+        <input type="text" name="name" required>
+
+        <label for="email">Your Email:</label>
+        <input type="email" name="email" required>
+
+        <label for="message">Your Message:</label>
+        <textarea name="message" rows="5" required></textarea>
+
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+
+      <p class="contact-info">
+        📞 Phone: +91-98765-43210<br>
+        ✉️ Email: support@VenNnaPickles.in<br>
+        🏠 Address: Guntur, Andhra Pradesh, India
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+     © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

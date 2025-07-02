@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}" class="active">🛒 Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Main Cart Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Your Cart</h1>
+
+      <table id="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Weight</th>
+            <th>Price (₹)</th>
+            <th>Quantity</th>
+            <th>Subtotal (₹)</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="cart-body">
+          <!-- Cart items will be populated by JS or Flask -->
+        </tbody>
+      </table>
+
+      <div class="cart-summary">
+        <h2>Total: ₹<span id="cart-total">0</span></h2>
+        <form action="{{ url_for('check_out') }}" method="POST">
+          <input type="hidden" name="cart_data" id="cart_data">
+          <input type="hidden" name="total_amount" id="total_amount">
+          <button type="submit" class="btn">Proceed to Checkout</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Optional JavaScript to handle cart locally (can also be Flask-controlled) -->
+  <script>
+    const dummyCart = [
+      { name: "Mango Pickle", weight: "500g", price: 280, quantity: 1 },
+      { name: "Chicken Pickle", weight: "250g", price: 600, quantity: 2 }
+    ];
+
+    function updateCartDisplay(cartItems) {
+      const body = document.getElementById('cart-body');
+      const totalEl = document.getElementById('cart-total');
+      const cartDataEl = document.getElementById('cart_data');
+      const totalAmountEl = document.getElementById('total_amount');
+
+      body.innerHTML = '';
+      let total = 0;
+
+      cartItems.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        body.innerHTML += `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.weight}</td>
+            <td>₹${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>₹${subtotal}</td>
+            <td><button onclick="removeItem(${index})">❌</button></td>
+          </tr>
+        `;
+      });
+
+      totalEl.textContent = total;
+      cartDataEl.value = JSON.stringify(cartItems);
+      totalAmountEl.value = total;
+    }
+
+    function removeItem(index) {
+      dummyCart.splice(index, 1);
+      updateCartDisplay(dummyCart);
+    }
+
+    // Initialize cart display on page load
+    updateCartDisplay(dummyCart);
+  </script>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

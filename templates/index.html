@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ven'N'na Pickles | Home</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+     <div class="logo-center">
+    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Ven'N'na Pickles Logo">
+  </div>
+    <nav class="nav-bar">
+    <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+    <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+    <a href="{{ url_for('snacks') }}">Snacks</a>
+    <a href="{{ url_for('cart') }}">Cart</a>
+    <a href="{{ url_for('check_out') }}">Checkout</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Ven'N'na Pickles</h1>
+      <p>Discover the taste of tradition. Authentic Indian pickles & snacks, freshly made and delivered to your door.</p>
+      
+    </div>
+  </main>
+
+  <!-- Highlight Section -->
+<section class="highlight-center">
+  <div class="start-shopping-wrapper">
+    <a href="{{ url_for('login') }}" class="start-shopping">Start Shopping</a>
+  </div>
+</section>
+
+<section class="highlight-section">
+  <div class="highlight-box">
+    <h2>🍴 Taste of Home</h2>
+    <p>One bite, and you’re back at your childhood kitchen.</p>
+  </div>
+  <div class="highlight-box">
+    <h2>🌾 Farm to Jar</h2>
+    <p>Locally sourced spices and sun-dried ingredients.</p>
+  </div>
+  <div class="highlight-box">
+    <h2>📦 Right to Your Plate</h2>
+    <p>Sealed with love and shipped with speed.</p>
+  </div>
+</section>
+
+
+
+
+  <!-- Footer -->
+
+  <section class="reviews-section">
+  <h2>❤️ What Our Customers Say</h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <p class="review-text">"Absolutely delicious! Tastes just like my grandmother’s mango pickle. Will order again!"</p>
+      <p class="review-author">— Ananya R., Hyderabad</p>
+    </div>
+    <div class="review-card">
+      <p class="review-text">"Fast delivery and amazing quality. The garlic pickle is a game changer."</p>
+      <p class="review-author">— Kiran M., Chennai</p>
+    </div>
+    <div class="review-card">
+      <p class="review-text">"I gifted a jar to my parents, and they loved it. Real authentic flavor."</p>
+      <p class="review-author">— Sneha J., Bengaluru</p>
+    </div>
+  </div>
+</section>
+
+  <footer>
+    © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

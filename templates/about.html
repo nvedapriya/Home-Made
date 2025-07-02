@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}">🛒 Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- About Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>About Ven'N'na Pickles</h1>
+      <p>
+        Welcome to <strong>Ven'N'na Pickles</strong>, your one-stop destination for handcrafted traditional pickles and snacks made with love. Born from a passion for preserving heritage flavors, we use age-old recipes passed down through generations, combining them with the highest quality ingredients.
+      </p>
+      <br>
+      <p>
+        Whether it's the tangy zest and  the fiery richness of our <strong>pickles</strong>, or the crunch of <strong>Snacks</strong>, every bite tells a story of home, tradition, and taste.
+      </p>
+      <br>
+      <p>
+        We’re proudly based in India and ship our products across the country. Each order is carefully packed to retain freshness and taste. Thank you for supporting local flavors!
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Ven'N'na Pickles | Authentic taste. Timeless tradition.
+  </footer>
+</body>
+</html>

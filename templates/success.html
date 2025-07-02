@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Success | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <style>
+    .success-box {
+      background-color: #e9ffe9;
+      padding: 2rem;
+      border: 1px solid #60c060;
+      border-radius: 10px;
+      text-align: center;
+      margin: 3rem auto;
+      max-width: 600px;
+    }
+    .success-box h1 {
+      color: #2f8f2f;
+    }
+    .success-box a {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #2f8f2f;
+      color: #fff;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .success-box a:hover {
+      background-color: #256f25;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}">Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Success Message -->
+  <main>
+    <div class="success-box">
+      <h1>🎉 Order Placed Successfully!</h1>
+      <p>Thank you for shopping with <strong>Ven'N'na Pickles</strong>.</p>
+      <p>Your delicious Order is coming to you!</p>
+      <a href="{{ url_for('home') }}">Continue Shopping</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

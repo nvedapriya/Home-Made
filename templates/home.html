@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}">🛒 Cart</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Welcome Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Welcome, {{ session.username }}!</h1>
+      <p>Craving authentic, homemade pickles and crunchy snacks? You’re in the right place!</p>
+
+      <div class="product-categories">
+        <div class="category-card">
+          <h2> Veg Pickles</h2>
+          <p>Classic mango, zesty lemon, and more...</p>
+          <a href="{{ url_for('veg_pickles') }}" class="btn">Shop Veg</a>
+        </div>
+
+        <div class="category-card">
+          <h2> Non-Veg Pickles</h2>
+          <p>Spicy chicken, mutton, fish pickles & more.</p>
+          <a href="{{ url_for('non_veg_pickles') }}" class="btn">Shop Non-Veg</a>
+        </div>
+
+        <div class="category-card">
+          <h2> Snacks</h2>
+          <p>Crispy treats to go with your pickles.</p>
+          <a href="{{ url_for('snacks') }}" class="btn">Shop Snacks</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

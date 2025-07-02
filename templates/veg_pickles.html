@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veg Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}"> Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Explore Our Veg Pickles</h1>
+    <div class="product-grid">
+      {% for product in products %}
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+        <h2>{{ product.name }}</h2>
+        <form action="{{ url_for('cart') }}" method="POST">
+            <label for="weight_{{ product.id }}">Select Weight:</label>
+            <select name="weight" id="weight_{{ product.id }}">
+              {% for weight, price in product.weights.items() %}
+              <option value="{{ weight }}">{{ weight }}g - ₹{{ price }}</option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="product_name" value="{{ product.name }}">
+            <button type="submit">Add to Cart</button>
+          </form>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Ven'N'na Pickles| Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>

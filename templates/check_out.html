@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Ven'N'na Pickles</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">Ven'N'na Pickles</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('veg_pickles') }}">Veg Pickles</a>
+      <a href="{{ url_for('non_vegpickles') }}">Non-Veg Pickles</a>
+      <a href="{{ url_for('snacks') }}">Snacks</a>
+      <a href="{{ url_for('cart') }}">🛒 Cart</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Checkout Form -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Checkout</h1>
+
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('checkout') }}">
+        <label for="name">Full Name:</label>
+        <input type="text" name="name" required>
+
+        <label for="address">Shipping Address:</label>
+        <textarea name="address" rows="3" required></textarea>
+
+        <label for="phone">Phone Number:</label>
+        <input type="text" name="phone" maxlength="10" pattern="\\d{10}" required placeholder="10-digit number">
+
+        <label for="payment">Payment Method:</label>
+        <select name="payment" required>
+          <option value="">--Select--</option>
+          <option value="UPI">UPI</option>
+          <option value="COD">Cash on Delivery</option>
+          <option value="Card">Credit/Debit Card</option>
+        </select>
+
+        <!-- These hidden fields will be filled dynamically from cart -->
+        <input type="hidden" name="cart_data" id="cart_data" value="">
+        <input type="hidden" name="total_amount" id="total_amount" value="">
+
+        <button type="submit" class="btn">Place Order</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Dummy data simulation – in real use, fetch from session or localStorage
+    const cartItems = [
+      { name: "Mango Pickle", weight: "500g", price: 280, quantity: 1 },
+      { name: "Chicken Pickle", weight: "250g", price: 600, quantity: 2 }
+    ];
+
+    function prepareCheckoutData() {
+      const cartInput = document.getElementById('cart_data');
+      const totalInput = document.getElementById('total_amount');
+
+      let total = 0;
+      cartItems.forEach(item => {
+        total += item.price * item.quantity;
+      });
+
+      cartInput.value = JSON.stringify(cartItems);
+      totalInput.value = total;
+    }
+
+    window.onload = prepareCheckoutData;
+  </script>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Ven'N'na Pickles | Taste the tradition of Indian pickles. Made with love, delivered with care.
+  </footer>
+
+</body>
+</html>
