@@ -12,9 +12,39 @@ from email.mime.multipart import MIMEMultipart
 app=Flask(__name__)
 app.secret_key = os.urandom(24)
 
-dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+
+SMTP_SERVER =
+
+os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+
+
+int(os.environ.get('SMTP_PORT', 587))
+
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
+
+SENDER_PASSWORD = os.environ.ge t('SENDER_PASSWORD')
+
+ENABLE_EMAIL = os.environ.get('ENABLE_EMAIL', 'False').lower() == 'true'
+
+#Table Names from.env
+
+USERS_TABLE_NAME = os.envir
+
+on.get('USERS_TABLE_NAME', 'FleetSyncUsers')
+
+
+ORDERS_TABLE_NAME = os.environ.get('MAINTE NANCE_TABLE_NAME', 'FleetSyncOrders')
+
+
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 users_table = dynamodb.Table('Users')
 orders_table = dynamodb.Table('Orders')
+
+SNS Configuration
+
+SNS_TOPIC_ARN = os.environ.get('SNS_TOPIC_ARN')
+
+ENABLE_SNS = Os.environ.get('ENABLE_SNS', 'False').lower() == 'true'
 
 
 EMAIL_ADDRESS = 'vedapriya.n1@gmail.com'
