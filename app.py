@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import json, uuid
 import smtplib
 import os
+import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -12,44 +13,119 @@ from email.mime.multipart import MIMEMultipart
 app=Flask(__name__)
 app.secret_key = os.urandom(24)
 
+dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+users_table = dynamodb.Table('Users')
+orders_table = dynamodb.Table('Orders')
 
-SMTP_SERVER =
 
-os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
-
-
-int(os.environ.get('SMTP_PORT', 587))
+SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
 
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
-
-SENDER_PASSWORD = os.environ.ge t('SENDER_PASSWORD')
+SENDER_PASSWORD = os.environ.get('SENDER_PASSWORD')
 
 ENABLE_EMAIL = os.environ.get('ENABLE_EMAIL', 'False').lower() == 'true'
 
 #Table Names from.env
 
-USERS_TABLE_NAME = os.envir
-
-on.get('USERS_TABLE_NAME', 'FleetSyncUsers')
-
-
-ORDERS_TABLE_NAME = os.environ.get('MAINTE NANCE_TABLE_NAME', 'FleetSyncOrders')
+USERS_TABLE_NAME = os.environ.get('USERS_TABLE_NAME', 'FleetSyncUsers')
+ORDERS_TABLE_NAME = os.environ.get('ORDERS_TABLE_NAME', 'FleetSyncOrders')
 
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 users_table = dynamodb.Table('Users')
 orders_table = dynamodb.Table('Orders')
 
-SNS Configuration
+#SNS Configuration
 
 SNS_TOPIC_ARN = os.environ.get('SNS_TOPIC_ARN')
+ENABLE_SNS = os.environ.get('ENABLE_SNS', 'False').lower() == 'true'
 
-ENABLE_SNS = Os.environ.get('ENABLE_SNS', 'False').lower() == 'true'
+# Initialize SNS client
+sns = boto3.client('sns', region_name='us-east-1')
 
 
 EMAIL_ADDRESS = 'vedapriya.n1@gmail.com'
 EMAIL_PASSWORD = 'rbga vkrx abtx jbgn' 
 
+
+
+logging.basicConfig(
+ level=logging.INFO,
+ format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+ handlers=[
+ logging.FileHandler("fleetsync.log"),
+ logging.StreamHandler()
+ ]
+)
+logger = logging.getLogger(__name__)
+
+
+#Helper Functions
+def is_logged_in():
+ return 'email' in session
+
+def get_user_role(email):
+ try:
+     response = users_table.get_item(Key={'email': email})
+     return response.get('Item', {}).get('role')
+ except Exception as e:
+     logger.error(f"Error fetching role: {e}")
+     return None
+
+def send_email(to_email, subject, body):
+    if not ENABLE_EMAIL:
+        logger.info(f"[Email Skipped] Subject: {subject} to {to_email}")
+        return
+
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.sendmail(SENDER_EMAIL, to_email, msg.as_string())
+        server.quit()
+
+        logger.info(f"Email sent to {to_email}")
+    except Exception as e:
+        logger.error(f"Email sending failed: {e}")
+
+def publish_to_sns(message, subject="FleetSync Notification"):
+    if not ENABLE_SNS:
+        logger.info("[SNS Skipped] Message: {}".format(message))
+        return
+
+    try:
+        response = sns.publish(
+            TopicArn=SNS_TOPIC_ARN,
+            Message=message,
+            Subject=subject
+        )
+        logger.info(f"SNS published: {response['MessageId']}")
+    except Exception as e:
+        logger.error(f"SNS publish failed: {e}")
+
+def require_role(required_role):
+    def decorator(f):
+        def decorated_function(*args, **kwargs):
+            if not is_logged_in():
+                flash('Please log in to access this page', 'warning')
+                return redirect(url_for('login'))
+            
+            user_role = session.get('role')
+            if user_role != required_role and required_role != 'any':
+                flash('Access denied. Insufficient permissions.', 'danger')
+                return redirect(url_for('dashboard'))
+            
+            return f(*args, **kwargs)
+        decorated_function.__name__ = f.__name__
+        return decorated_function
+    return decorator
 
 products = {
     'non_vegpickles': [
@@ -92,8 +168,12 @@ def contact():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+
+        if not username or not password:
+            return render_template('login.html', error="Both fields are required.")
+
         try:
             response = users_table.get_item(Key={'username': username})
             if 'Item' not in response:
@@ -104,13 +184,12 @@ def login():
                 session['logged_in'] = True
                 session['username'] = username
                 session.setdefault('home', [])
-                return redirect(url_for('home'))  # ✅ Add this to redirect after login
+                return redirect(url_for('home'))
             else:
                 return render_template('login.html', error="Incorrect password")
         except Exception as e:
             return render_template('login.html', error=f"An error occurred: {str(e)}")
-    
-    # ✅ This was missing
+
     return render_template('login.html')
 
 
@@ -118,9 +197,11 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username'].strip()
-        email =request.form['email'].strip()
-        password= request.form['password']
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        if not username or not email or not password:
+            return render_template('signup.html', error='All fields are required.')
         try:
             response = users_table.get_item(Key={'username': username})
             if 'Item' in response:
@@ -142,6 +223,7 @@ def signup():
             app.logger.error(f"Signup error: {str(e)}")
             return render_template('signup.html', error='Registration failed. Please try again.')
     return render_template('signup.html')
+
 
 @app.route('/logout')
 def logout():
