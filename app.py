@@ -79,6 +79,7 @@ def send_email(to_email, subject, body):
     except Exception as e:
         logger.error(f"Email sending failed: {e}")
 
+
 def publish_to_sns(message, subject="FleetSync Notification"):
     if not ENABLE_SNS:
         logger.info("[SNS Skipped] Message: {}".format(message))
