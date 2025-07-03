@@ -168,21 +168,22 @@ def contact():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
 
-        if not username or not password:
+        if not email or not password:
             return render_template('login.html', error="Both fields are required.")
 
         try:
-            response = users_table.get_item(Key={'username': username})
+            response = users_table.get_item(Key={'email': email})
             if 'Item' not in response:
                 return render_template('login.html', error="User not found")
 
             user = response['Item']
             if check_password_hash(user['password'], password):
                 session['logged_in'] = True
-                session['username'] = username
+                session['username'] = user.get('username')
+                session['email'] = email
                 session.setdefault('home', [])
                 return redirect(url_for('home'))
             else:
@@ -191,28 +192,28 @@ def login():
             return render_template('login.html', error=f"An error occurred: {str(e)}")
 
     return render_template('login.html')
-
-
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
+
         if not username or not email or not password:
             return render_template('signup.html', error='All fields are required.')
+
         try:
-            response = users_table.get_item(Key={'username': username})
+            # Check if email (partition key) already exists
+            response = users_table.get_item(Key={'email': email})
             if 'Item' in response:
-                return render_template('signup.html', error = 'Username already exists')
-            
+                return render_template('signup.html', error='An account with this email already exists.')
+
             hashed_password = generate_password_hash(password)
 
             users_table.put_item(
                 Item={
+                    'email': email,                # Partition key
                     'username': username,
-                    'email': email,
                     'password': hashed_password,
                 }
             )
@@ -222,6 +223,7 @@ def signup():
         except Exception as e:
             app.logger.error(f"Signup error: {str(e)}")
             return render_template('signup.html', error='Registration failed. Please try again.')
+
     return render_template('signup.html')
 
 
