@@ -288,6 +288,28 @@ def check_out():
             print(f"Checkout error: {str(e)}")
             return render_template('checkout.html', error="An unexpected error occurred. Please try again.")
     return render_template('check_out.html')
+# Send confirmation email to customer
+send_email(
+    to_email=session.get('email'),
+    subject="Order Confirmation - Achaar Garden",
+    body=f"""
+Hi {name},
+
+Thank you for your order of ₹{total_amount:.2f}!
+
+We’ve received the following items:
+{json.dumps(cart_items, indent=2)}
+
+Delivery Address:
+{address}
+
+We’ll notify you once it’s out for delivery.
+
+Regards,
+Achaar Garden Team
+    """
+)
+
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
@@ -331,22 +353,5 @@ def success():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-def send_email(to_email, subject, body):
-    try:
-        msg = MIMEMultipart()
-        msg['From'] = EMAIL_ADDRESS
-        msg['To'] = to_email
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
-
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True) # Add debug True temporarily
