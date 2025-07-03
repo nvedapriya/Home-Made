@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 app=Flask(__name__)
 app.secret_key = os.urandom(24)
 
-dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 users_table = dynamodb.Table('Users')
 orders_table = dynamodb.Table('Orders')
 
@@ -26,16 +26,6 @@ SENDER_PASSWORD = os.environ.get('SENDER_PASSWORD')
 
 ENABLE_EMAIL = os.environ.get('ENABLE_EMAIL', 'False').lower() == 'true'
 
-#Table Names from.env
-
-USERS_TABLE_NAME = os.environ.get('USERS_TABLE_NAME', 'FleetSyncUsers')
-ORDERS_TABLE_NAME = os.environ.get('ORDERS_TABLE_NAME', 'FleetSyncOrders')
-
-
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-users_table = dynamodb.Table('Users')
-orders_table = dynamodb.Table('Orders')
-
 #SNS Configuration
 
 SNS_TOPIC_ARN = os.environ.get('SNS_TOPIC_ARN')
@@ -43,12 +33,6 @@ ENABLE_SNS = os.environ.get('ENABLE_SNS', 'False').lower() == 'true'
 
 # Initialize SNS client
 sns = boto3.client('sns', region_name='us-east-1')
-
-
-EMAIL_ADDRESS = 'vedapriya.n1@gmail.com'
-EMAIL_PASSWORD = 'rbga vkrx abtx jbgn' 
-
-
 
 logging.basicConfig(
  level=logging.INFO,
